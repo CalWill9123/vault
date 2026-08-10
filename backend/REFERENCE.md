@@ -186,7 +186,22 @@ export default ComponentName
 
 ---
 
-## 2. Import / Export
+## 2. JSX Attributes vs. Content
+**What it is:** Two completely different places to put data on a JSX tag, and only one of them is visible on screen.
+
+```js
+// attribute — configures the element, NEVER shows up visually
+<li key={transaction._id}></li>
+
+// content — sits between the tags, this is what actually renders
+<li key={transaction._id}>{transaction.category}</li>
+```
+
+Attributes live *inside* the opening tag, before its closing `>` — things like `key`, `value`, `onChange`, `className`. They configure the element or hand it data to work with internally, but the browser never draws them as text. Anything you actually want a person to **see** has to go between the opening and closing tags, as plain text or a `{}` expression. Writing `<li category={transaction.category}></li>` is completely valid JSX — it just renders an empty, invisible bullet point, because `category` is doing nothing but sitting there as configuration nobody asked for.
+
+---
+
+## 3. Import / Export
 **What it is:** How files share code with each other. You must explicitly export and import everything.
 
 ```js
@@ -201,7 +216,7 @@ import { myFunc } from './myFile'
 
 ---
 
-## 3. Props
+## 4. Props
 **What it is:** Data passed from parent to child. Child can read it, never change it. One direction only.
 
 ```js
@@ -216,7 +231,7 @@ const Component = ({ value, onAction }) => {
 
 ---
 
-## 4. useState
+## 5. useState
 **What it is:** Stores a value in the component. When updated, the component re-renders.
 
 ```js
@@ -230,7 +245,7 @@ const [count, setCount] = useState(0)        // number
 
 ---
 
-## 5. Controlled Input
+## 6. Controlled Input
 **What it is:** An input whose value is controlled by React state. `value` and `onChange` must always be paired.
 
 ```js
@@ -245,7 +260,7 @@ const [input, setInput] = useState('')
 
 ---
 
-## 6. Form Submission
+## 7. Form Submission
 **What it is:** Handling a form submit without the page reloading. Always call `e.preventDefault()` first.
 
 ```js
@@ -261,7 +276,7 @@ const handleSubmit = (e) => {
 
 ---
 
-## 7. Event Handlers
+## 8. Event Handlers
 **What it is:** Functions that run when the user does something. Pass a reference, never call it directly.
 
 ```js
@@ -274,7 +289,7 @@ const handleSubmit = (e) => {
 
 ---
 
-## 8. Conditional Rendering
+## 9. Conditional Rendering
 **What it is:** Showing or hiding UI based on a condition.
 
 ```js
@@ -287,7 +302,7 @@ const handleSubmit = (e) => {
 
 ---
 
-## 9. Template Literals
+## 10. Template Literals
 **What it is:** Strings with embedded variables. Use backticks, not quotes.
 
 ```js
@@ -298,7 +313,7 @@ window.alert(`${name} already exists`)
 
 ---
 
-## 10. Ternary Operator
+## 11. Ternary Operator
 **What it is:** A one-line if/else that returns a value.
 
 ```js
@@ -313,7 +328,7 @@ const label = isActive ? 'Active' : 'Inactive'
 
 ---
 
-## 11. Rendering a List
+## 12. Rendering a List
 **What it is:** Turning an array into JSX elements. Always use `key` with the item's id.
 
 ```js
@@ -324,7 +339,7 @@ const label = isActive ? 'Active' : 'Inactive'
 
 ---
 
-## 12. Adding to an Array
+## 13. Adding to an Array
 **What it is:** Creating a new array with an item added. Never mutate state directly.
 
 ```js
@@ -333,7 +348,7 @@ setItems([...items, newItem])
 
 ---
 
-## 13. Filtering an Array
+## 14. Filtering an Array
 **What it is:** Returning only items that match a condition.
 
 ```js
@@ -345,7 +360,7 @@ setShowAll(!showAll)
 
 ---
 
-## 14. Duplicate Check
+## 15. Duplicate Check
 **What it is:** Searching the array before adding to prevent duplicates.
 
 ```js
@@ -358,7 +373,7 @@ if (duplicate) {
 
 ---
 
-## 15. Service Module
+## 16. Service Module
 **What it is:** A separate file that holds all axios calls. App.jsx never talks to the server directly.
 
 ```js
@@ -379,7 +394,7 @@ export default { getAll, create, update, remove }
 
 ---
 
-## 16. useEffect + Service
+## 17. useEffect + Service
 **What it is:** Fetches data from the server once when the page loads. Empty array `[]` = run once only.
 
 ```js
@@ -395,7 +410,7 @@ useEffect(() => {
 
 ---
 
-## 17. Error Handling
+## 18. Error Handling
 **What it is:** `.catch` runs if the server call fails. Always chain it so the app doesn't crash silently.
 
 ```js
@@ -407,7 +422,7 @@ itemService
 
 ---
 
-## 18. Deleting an Item
+## 19. Deleting an Item
 **What it is:** Handler lives in App.jsx where state is. Child just calls it with the id.
 
 ```js
@@ -429,7 +444,7 @@ const handleDelete = (id) => {
 
 ---
 
-## 19. Adding CSS
+## 20. Adding CSS
 **What it is:** Two ways to style in React — CSS file with `className`, or inline styles as a JS object.
 
 ```js
@@ -454,7 +469,7 @@ import './App.css'
 
 ---
 
-## 20. Notification Component
+## 21. Notification Component
 **What it is:** A reusable component for showing timed success/error messages. Returns null when there's nothing to show.
 
 ```js
@@ -504,7 +519,7 @@ Run two terminals:
 
 ---
 
-## 21. Raw Node.js HTTP Server
+## 22. Raw Node.js HTTP Server
 **What it is:** The built-in Node.js way to create a server. No install needed. FSO shows this first so you understand what Express wraps.
 
 ```js
@@ -521,7 +536,7 @@ console.log('Server running on port 3001')
 
 ---
 
-## 22. nodemon
+## 23. nodemon
 **What it is:** Auto-restarts the server when you save `index.js`. Without it you'd restart manually every time.
 
 ```
@@ -530,7 +545,7 @@ npm run dev:server
 
 ---
 
-## 23. Express Setup
+## 24. Express Setup
 **What it is:** A library that makes routing clean. Always put `express.json()` before your routes.
 
 ```js
@@ -554,7 +569,7 @@ console.log(`Server running on port ${PORT}`)
 
 ---
 
-## 24. Express Router — Splitting Routes into Files
+## 25. Express Router — Splitting Routes into Files
 **What it is:** Instead of writing every route directly on `app` in `index.js`, related routes can live in their own file using `express.Router()`. That router is then "mounted" onto the main app at a path prefix — every route inside it automatically gets that prefix.
 
 ```js
@@ -578,7 +593,7 @@ Mounting needs **both** arguments — the path prefix and the router object itse
 
 ---
 
-## 25. REST Endpoints
+## 26. REST Endpoints
 **What REST actually is:** REST (**RE**presentational **S**tate **T**ransfer) is an architectural style for designing APIs — a set of conventions, not a strict protocol. Three core ideas:
 - **Client-server:** frontend and backend are separate pieces that only talk over HTTP — neither needs to know how the other is built internally.
 - **Stateless:** every request carries everything the server needs to handle it (e.g. a JWT in the header) — the server doesn't remember anything about your previous requests.
@@ -611,7 +626,7 @@ app.delete('/api/items/:id', (request, response) => {
 
 ---
 
-## 26. request.params vs request.body
+## 27. request.params vs request.body
 **What it is:** Two places incoming data can come from.
 
 ```js
@@ -626,7 +641,7 @@ GET and DELETE use `params`. POST and PUT use `body`.
 
 ---
 
-## 27. generateId
+## 28. generateId
 **What it is:** Finds the highest existing id and adds 1. Always returns a string to stay consistent with your data.
 
 ```js
@@ -640,7 +655,7 @@ const generateId = () => {
 
 ---
 
-## 28. Validating the Request Body
+## 29. Validating the Request Body
 **What it is:** Check that required fields exist before saving. The `return` stops the function immediately after the 400.
 
 ```js
@@ -666,7 +681,7 @@ app.post('/api/items', (request, response) => {
 
 ---
 
-## 29. Middleware
+## 30. Middleware
 **What it is:** Code that runs on every request before it hits your route. `express.json()` is middleware.
 
 ```js
@@ -678,7 +693,7 @@ Always register middleware before your routes.
 
 ---
 
-## 30. HTTP Status Codes — In Practice
+## 31. HTTP Status Codes — In Practice
 **What it is:** Sending the status codes from the table at the top of this sheet inside real Express routes.
 
 ```js
@@ -690,7 +705,7 @@ Most common in your routes: `200`/`201` on success, `400` for bad input, `404` f
 
 ---
 
-## 31. Postman — Testing Routes
+## 32. Postman — Testing Routes
 **What it is:** A tool to send HTTP requests to your backend without needing the frontend.
 
 **GET all:**
@@ -708,7 +723,7 @@ Most common in your routes: `200`/`201` on success, `400` for bad input, `404` f
 
 ---
 
-## 32. Vite Proxy
+## 33. Vite Proxy
 **What it is:** Forwards `/api` requests from the frontend to the backend in development. Avoids CORS errors.
 
 ```js
@@ -722,7 +737,7 @@ server: {
 
 This is why `server.js` uses `/api/items` not `http://localhost:3001/api/items`.
 
-## 33. Serving the Frontend from Express (Production)
+## 34. Serving the Frontend from Express (Production)
 **What it is:** In production there's no Vite, no proxy. Express serves everything — the React app AND the API. You build the frontend into a `dist` folder and tell Express to serve it as static files.
 
 ```js
@@ -737,7 +752,7 @@ app.use(express.static(path.join(__dirname, 'dist')))
 
 ---
 
-## 34. Dev vs Production
+## 35. Dev vs Production
 **What it is:** The two environments your app runs in and how they differ.
 
 | | Development | Production |
@@ -749,7 +764,7 @@ app.use(express.static(path.join(__dirname, 'dist')))
 
 ---
 
-## 35. Deploying to Fly.io
+## 36. Deploying to Fly.io
 **What it is:** Hosting your app on the internet so anyone can visit it.
 
 **Steps:**
@@ -800,7 +815,7 @@ After 3c:    React → Express → MongoDB (persists forever)
 
 ---
 
-## 36. mongoose.js — Practice Script
+## 37. mongoose.js — Practice Script
 **What it is:** A standalone script for testing your MongoDB connection and saving documents. Not part of your main app — run it directly from the terminal to verify things work.
 
 ```js
@@ -848,7 +863,7 @@ node mongoose.js yourpassword
 
 ---
 
-## 37. Schema & Model
+## 38. Schema & Model
 **What it is:** A schema defines the shape of your data. A model is what you use to create, read, update, and delete documents in MongoDB.
 
 ```js
@@ -866,7 +881,7 @@ const Item = mongoose.model('Item', itemSchema)
 
 ---
 
-## 38. Schema Field Options — enum
+## 39. Schema Field Options — enum
 **What it is:** Restricts a field to one of a fixed set of values. Wrap the type in an object and add `enum` — if a save doesn't match one of the listed values, Mongoose blocks it with a validation error.
 
 ```js
@@ -875,7 +890,7 @@ type: { type: String, enum: ['income', 'expense'] }
 
 ---
 
-## 39. Schema Field Options — ObjectId & ref (Relationships)
+## 40. Schema Field Options — ObjectId & ref (Relationships)
 **What it is:** How one document points to another. `mongoose.Schema.Types.ObjectId` is the type of every document's `_id` — when a field holds a *different* document's id, you type it as `ObjectId` and add `ref` to say which model it points to. This is how Vault links a transaction to the user who owns it.
 
 ```js
@@ -903,7 +918,7 @@ You don't need `.populate()` for Vault's current features (the frontend already 
 
 ---
 
-## 40. MongoDB Atlas Setup
+## 41. MongoDB Atlas Setup
 **What it is:** The cloud-hosted MongoDB service. Your database lives here, not on your computer.
 
 **Steps:**
@@ -920,7 +935,7 @@ mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?appName=Cluster0
 
 ---
 
-## 41. .env File & process.env
+## 42. .env File & process.env
 **Why it's needed:** Your code goes to GitHub, and GitHub is public. If you hardcode your MongoDB password or JWT secret directly in your code, anyone can read it and own your database. The `.env` file keeps secrets off GitHub entirely — it never gets committed.
 
 Think of it like this: your code is a recipe that says "add the secret ingredient." The `.env` file is a locked box only the server can open. Someone stealing the recipe still doesn't know the ingredient.
@@ -951,7 +966,7 @@ In production (Fly.io, Render), you set these as server "secrets" instead of a `
 
 ---
 
-## 42. Connecting index.js to MongoDB
+## 43. Connecting index.js to MongoDB
 **What it is:** Replacing the hardcoded array in `index.js` with a real MongoDB connection. After this, data persists even when the server restarts.
 
 ```js
@@ -966,7 +981,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 ---
 
-## 43. toJSON Transform
+## 44. toJSON Transform
 **What it is:** MongoDB stores documents with `_id` and `__v` fields. This transform cleans them up so your frontend receives a normal `id` instead.
 Without this, your frontend gets `_id: "64abc..."` instead of `id: "64abc..."` and React won't match them correctly.
 
@@ -982,7 +997,7 @@ movieSchema.set('toJSON', {
 
 ---
 
-## 44. MongoDB Route Methods
+## 45. MongoDB Route Methods
 **What it is:** Replace your old array operations with these MongoDB model methods. No more manual `generateId` — MongoDB handles IDs automatically.
 
 ```js
@@ -1008,7 +1023,7 @@ Movie.findByIdAndDelete(request.params.id).then(() => response.status(204).end()
 
 ---
 
-## 45. Password Hashing with bcrypt
+## 46. Password Hashing with bcrypt
 **What it is:** You never store a plain-text password. bcrypt scrambles it into a one-way hash before saving. On login, bcrypt compares the input against the stored hash — it can't "un-hash", it just checks if they match.
 
 ```js
@@ -1023,7 +1038,7 @@ Never store `password` — always store `passwordHash`.
 
 ---
 
-## 46. JWT (JSON Web Tokens)
+## 47. JWT (JSON Web Tokens)
 **What it is:** A signed token you hand to the user after a successful login. The frontend stores it and sends it with every future request to prove who they are. You sign it with a secret key — anyone can read the payload, but only your server can create a valid signature.
 
 ```js
@@ -1039,7 +1054,7 @@ Store `JWT_SECRET` in `.env` — never hardcode it.
 
 ---
 
-## 47. Auth Route Pattern (Register & Login)
+## 48. Auth Route Pattern (Register & Login)
 **What it is:** The two routes every auth system needs. Register saves a new user with a hashed password. Login finds the user, checks the password, and returns a JWT. Always use the same error message for wrong email AND wrong password — never reveal which one failed.
 
 ```js
@@ -1068,7 +1083,7 @@ router.post('/login', async (req, res) => {
 
 ---
 
-## 48. Protected CRUD Routes (Transactions Pattern)
+## 49. Protected CRUD Routes (Transactions Pattern)
 **What it is:** Routes that require a logged-in user. `router.use(authMiddleware)` protects every route in the file at once. User identity comes from `req.user.id` (set by the middleware) — never from `req.body`, or users could fake ownership.
 
 ```js
@@ -1102,7 +1117,7 @@ router.delete('/:id', async (req, res) => {
 
 ---
 
-## 49. Optional Chaining (?.)
+## 50. Optional Chaining (?.)
 **What it is:** Safely access nested properties. Returns `undefined` instead of crashing if something is null.
 
 ```js
@@ -1111,7 +1126,7 @@ item?.genre?.toLowerCase()
 
 ---
 
-## 50. Nullish Coalescing (??)
+## 51. Nullish Coalescing (??)
 **What it is:** Fallback value only when something is `null` or `undefined`. Unlike `||`, won't override `0` or `false`.
 
 ```js
@@ -1120,7 +1135,7 @@ const rating = item.rating ?? 'No rating'
 
 ---
 
-## 51. Object Shorthand
+## 52. Object Shorthand
 **What it is:** When the variable name matches the key name, you can skip the repetition.
 
 ```js
@@ -1132,7 +1147,7 @@ const movie = { title, rating }   // same as { title: title, rating: rating }
 
 ---
 
-## 52. Spread Operator
+## 53. Spread Operator
 **What it is:** Copies arrays or objects. Use to add items or merge without mutating.
 
 ```js
@@ -1142,7 +1157,7 @@ const updated = { ...item, watched: true }
 
 ---
 
-## 53. Array Methods
+## 54. Array Methods
 **What it is:** Built-in methods for working with arrays beyond map and filter.
 
 ```js
@@ -1154,7 +1169,7 @@ items.reduce((sum, i) => sum + i.rating, 0)  // collapse to single value
 
 ---
 
-## 54. async/await
+## 55. async/await
 **What it is:** Cleaner syntax for promises. Same as `.then()` but easier to read.
 
 ```js
@@ -1170,7 +1185,7 @@ const fetchItems = async () => {
 
 ---
 
-## 55. try/catch (Error Handling)
+## 56. try/catch (Error Handling)
 **What it is:** Wraps code that might throw an error. If it throws, the `catch` block runs instead of crashing the app. Not the same as `if/else` — use it specifically when a function is designed to throw on failure rather than return false.
 
 ```js
@@ -1187,7 +1202,7 @@ try {
 
 ---
 
-## 56. Destructuring
+## 57. Destructuring
 **What it is:** Pull values out of objects or arrays into their own variables.
 
 ```js
@@ -1198,7 +1213,7 @@ const Component = ({ title, rating }) => { ... }
 
 ---
 
-## 57. console.log Debugging
+## 58. console.log Debugging
 **What it is:** Quick tricks to make debugging faster and clearer.
 
 ```js
@@ -1213,7 +1228,7 @@ console.log({ title, rating, watched })         // multiple values at once
 
 ---
 
-## 58. React Context (createContext / useContext)
+## 59. React Context (createContext / useContext)
 **What it is:** A way to share state across your whole app without passing props through every component. Instead of `App → Page → Component → DeepChild`, any component can just call `useAuth()` and get what it needs directly.
 
 Three moving parts:
@@ -1254,7 +1269,7 @@ The `value` prop on `<AuthContext.Provider>` is what every consumer receives. Wh
 
 ---
 
-## 59. React Router — Routes & Pages
+## 60. React Router — Routes & Pages
 **What it is:** Maps different URL paths to different page components. Wrap the whole app once in `BrowserRouter`, then declare which component renders at which path with `Routes`/`Route`.
 
 ```js
@@ -1284,7 +1299,7 @@ import Dashboard from './pages/Dashboard'
 
 ---
 
-## 60. useNavigate — Redirecting in Code
+## 61. useNavigate — Redirecting in Code
 **What it is:** Sends the user to a different page from inside a function (e.g. after a successful login) instead of waiting for them to click a link.
 
 ```js
@@ -1299,6 +1314,92 @@ navigate('/dashboard')   // call this after login succeeds
 **Not click-bound.** `navigate` is just a plain function — you call it from wherever your own code decides to (inside an `async` `handleSubmit` after `authService.login()` resolves, a `useEffect`, a timeout, whatever). The click-triggered, declarative version of this is `<Link to="/dashboard">` (like an `<a>` tag) — not the same tool, and not covered yet.
 
 ---
+
+## 62. Lifting State Up (Callback Props)
+**What it is:** When a child component needs to change data that lives in its parent, it can't just reach up and edit the parent's state directly — props only flow one way (§3). Instead, the parent passes a *function* down as a prop; the child calls that function, and the function (which lives in the parent, next to the real `setState`) does the actual updating.
+
+```js
+// parent — owns the state
+const Dashboard = () => {
+  const [transactions, setTransactions] = useState([])
+
+  const handleAdd = (newTransaction) => {
+    setTransactions([...transactions, newTransaction])
+  }
+
+  return <TransactionForm onAdd={handleAdd} />
+}
+
+// child — never touches state directly, just calls what it was given
+const TransactionForm = ({ onAdd }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onAdd({ amount, category })   // hands data back UP to the parent
+  }
+}
+```
+
+This is the pattern behind `Dashboard.jsx` coordinating `TransactionForm.jsx` and `TransactionList.jsx` — the parent is the single source of truth for the transactions array; the children just report events (`onAdd`, `onDelete`) and let the parent decide what to do about them.
+
+---
+
+## 63. Protected Routes (Route Guarding)
+**What it is:** Right now, typing `/dashboard` directly into the URL bar works whether or not you're logged in — nothing checks. A protected route wraps a page and checks `useAuth()`'s `user` before rendering it: no user, redirect to `/login`; user exists, render the real page.
+
+```js
+// components/ProtectedRoute.jsx
+import { useAuth } from '../context/AuthContext'
+import { Navigate } from 'react-router-dom'
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" />
+  return children
+}
+
+// App.jsx — wrap the route that needs protecting
+<Route path="/dashboard" element={
+  <ProtectedRoute><Dashboard /></ProtectedRoute>
+} />
+```
+
+`<Navigate to="..." />` is the declarative cousin of `useNavigate()` (§60) — same redirect, but usable directly in JSX instead of inside a function.
+
+---
+
+## 64. Sending the JWT with Requests (Authorization Header)
+**What it is:** The backend's `authMiddleware` (§48) checks every protected request for `req.headers.authorization` — a login token has to actually be attached to each request, or the server sends back a 401. Nothing does this automatically; every service call that hits a protected route has to add the header itself.
+
+```js
+// services/transactionService.js
+const getTransactions = (token) =>
+  axios.get(baseURL, {
+    headers: { Authorization: `Bearer ${token}` }
+  }).then(res => res.data)
+```
+
+The `Bearer ` prefix has to match what the backend expects to split on (`req.headers.authorization?.split(' ')[1]` in `middleware/auth.js`) — that's why it's `Bearer ${token}`, not just the raw token. The token itself comes from `useAuth()`'s `user` (whatever `authService.login()` returned), so `Dashboard.jsx` will need to pass it into every `transactionService` call.
+
+---
+
+## 65. The Frontend↔Backend Contract
+**What it is:** The frontend and backend aren't magically linked — they just both agree, separately, on the same shape of data. Nothing enforces this at write-time; if they drift apart, it fails silently instead of loudly.
+
+```js
+// backend/routes/auth.js — the route reads exactly these three keys off req.body
+router.post('/register', async (req, res) => {
+  const { name, email, password } = req.body
+  ...
+})
+```
+
+```js
+// frontend — the form has to send exactly those three keys, spelled the same way
+authService.register({ name, email, password })
+```
+
+If the frontend sent `{ username, email, password }` instead — one field misnamed — `req.body.name` would just be `undefined` on the backend. No crash, no error. The user gets saved with a missing name and nobody's told. This is why `Login.jsx` sends `{email, password}` and `Register.jsx` sends `{name, email, password}` — they're not "the same form," they're two separate contracts, each matching its own backend route's `req.body` destructuring exactly. **Watch for this again with `transactionService.js`** — whatever shape `TransactionForm.jsx` sends has to match what `routes/transactions.js`'s POST route destructures, field for field.
+
 ---
 
 # CS FUNDAMENTALS — Transferable Knowledge
@@ -1307,7 +1408,7 @@ Concepts learned through building Vault. These apply to any language, any framew
 
 ---
 
-## 61. Hashing vs Encryption
+## 66. Hashing vs Encryption
 **What it is:** Two ways to protect data — not the same thing.
 
 | | Hashing | Encryption |
@@ -1320,7 +1421,7 @@ Hashing is better for passwords — even if someone steals your database, they c
 
 ---
 
-## 62. Stateless vs Stateful Authentication
+## 67. Stateless vs Stateful Authentication
 **What it is:** Two ways to handle "is this user logged in?"
 
 | | Stateful (sessions) | Stateless (JWT) |
@@ -1333,7 +1434,7 @@ Stateless means the server hands you a signed token after login. You send it wit
 
 ---
 
-## 63. Enumeration Attack Prevention
+## 68. Enumeration Attack Prevention
 **What it is:** Never tell an attacker which specific field failed on login. Always return the same error for wrong email AND wrong password.
 
 ```js
@@ -1348,7 +1449,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 64. Separation of Concerns
+## 69. Separation of Concerns
 **What it is:** Each file should have one job. If a file is doing two things, it's a sign it should be split. Makes bugs easier to find and code easier to explain in interviews.
 
 | File | Job |
@@ -1360,7 +1461,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 65. How to Read an Error Message
+## 70. How to Read an Error Message
 **What it is:** Error messages tell you exactly what went wrong — most beginners skip past them. Read them like a sentence.
 
 ```
@@ -1378,7 +1479,7 @@ Then ask: *where in my code would something be null that I'm calling `.password`
 
 ---
 
-## 66. Debugging Systematically
+## 71. Debugging Systematically
 **What it is:** A process for finding bugs without panicking. Guessing randomly wastes time — narrow it down.
 
 1. **Read the error message** — what does it actually say?
@@ -1391,7 +1492,7 @@ Most bugs come from: wrong variable name, wrong data shape, something being null
 
 ---
 
-## 67. How to Google an Error
+## 72. How to Google an Error
 **What it is:** Googling effectively is a real skill. Bad searches return nothing useful.
 
 **Remove project-specific parts** from the error:
@@ -1409,7 +1510,7 @@ If Stack Overflow doesn't help, search the **official docs** — MDN for JS, Mon
 
 ---
 
-## 68. CRUD — The Four Operations
+## 73. CRUD — The Four Operations
 **What it is:** Every database-driven app does some combination of these four things. If you understand CRUD, you understand 80% of what backends do.
 
 | Letter | Operation | HTTP Method | Mongoose |
@@ -1423,7 +1524,7 @@ Vault's transaction routes are CRUD. So is every todo app, every social media fe
 
 ---
 
-## 69. Thinking in Inputs and Outputs
+## 74. Thinking in Inputs and Outputs
 **What it is:** When you don't know how to write a function, ignore the code and just ask: *what goes in, what comes out?*
 
 Example — POST /api/transactions:
@@ -1434,7 +1535,7 @@ Once you know that, the code is just filling in the middle. This works for any f
 
 ---
 
-## 70. Working Backwards
+## 75. Working Backwards
 **What it is:** When you're stuck, start from what you *want* to end up with and trace backwards to what you need.
 
 Example — you want `res.json({ token })`:
@@ -1447,7 +1548,7 @@ Now you have your steps in order. Write them top to bottom.
 
 ---
 
-## 71. The Principle of Least Privilege
+## 76. The Principle of Least Privilege
 **What it is:** Only give code (or users) the minimum access they need to do their job. A real security principle used everywhere.
 
 Examples in Vault:
@@ -1459,7 +1560,7 @@ In interviews: "I applied least privilege by scoping transactions to the authent
 
 ---
 
-## 72. Precision vs Comprehension Errors
+## 77. Precision vs Comprehension Errors
 **What it is:** Two completely different types of mistakes. Knowing which one you made tells you how to fix it.
 
 **Comprehension error** — you don't understand the concept. Fix: re-read, ask for an explanation, look it up.
@@ -1476,7 +1577,7 @@ Most bugs while learning are precision errors, not comprehension errors. That di
 
 ---
 
-## 73. Think Smaller
+## 78. Think Smaller
 **What it is:** When a problem feels overwhelming, you're probably trying to solve too much at once. The fix is always to shrink the problem until it's something you can actually hold in your head.
 
 **The rule:** If you can't explain what the next line of code should do, the step is still too big.
@@ -1499,7 +1600,7 @@ Now write step 1. Don't think about step 2 yet.
 
 ---
 
-## 74. Git Branching & Pull Requests
+## 79. Git Branching & Pull Requests
 **What it is:** Solo, committing straight to `main` is fine. On any real team, it isn't — everyone works on a separate **branch** so `main` always stays deployable.
 
 ```
@@ -1512,7 +1613,7 @@ Then you open a **pull request (PR)** — a request for someone to review your b
 
 ---
 
-## 75. The Event Loop — Why async/await Doesn't Block
+## 80. The Event Loop — Why async/await Doesn't Block
 **What it is:** JavaScript runs on a single thread — it can only do one thing at a time. So when you `await` a database call or an axios request, how does the rest of the app keep responding?
 
 The **event loop** is the mechanism: slow operations (network calls, timers, file reads) get handed off to the runtime (Node/browser), and your JS code moves on immediately. When that operation finishes, its `.then()`/callback gets queued and run *later*, in between other work — not blocking anything in the meantime.
@@ -1528,7 +1629,7 @@ This is why your `authService.login()` call doesn't freeze the page while it wai
 
 ---
 
-## 76. Big O Notation — The Basics
+## 81. Big O Notation — The Basics
 **What it is:** A way to describe how an algorithm's runtime grows as the input grows. Common interview topic, and useful for spotting slow code in your own projects.
 
 | Notation | Name | Example |
@@ -1542,14 +1643,14 @@ You don't need to calculate it precisely day to day — the useful habit is noti
 
 ---
 
-## 77. Technical Debt
+## 82. Technical Debt
 **What it is:** Shortcuts taken to ship faster now, at the cost of harder-to-maintain code later — like a financial loan, it has to get "paid back" eventually (refactored) or it keeps accumulating interest (more bugs, slower changes).
 
 Not inherently bad — sometimes shipping now and cleaning up later is the right call. The problem is debt that's never acknowledged or repaid. In interviews, being able to say "we took on debt here to hit a deadline, and here's what paying it down would've looked like" reads as senior judgment, not a confession.
 
 ---
 
-## 78. DRY vs. Premature Abstraction (Rule of Three)
+## 83. DRY vs. Premature Abstraction (Rule of Three)
 **What it is:** "Don't Repeat Yourself" is real, but applying it too early creates the opposite problem — an abstraction built around a guess at future needs that doesn't actually fit when those needs arrive.
 
 **The Rule of Three:** don't abstract something out until you've written it **three** separate times. Two similar-looking pieces of code might just be a coincidence; a third occurrence is a real pattern worth extracting into a shared function/component.
@@ -1558,7 +1659,7 @@ Building `TransactionForm` and `TransactionList` separately even though they'll 
 
 ---
 
-## 79. Idempotency
+## 84. Idempotency
 **What it is:** An operation is **idempotent** if doing it once and doing it five times leave the system in the same state. This matters because networks are unreliable — a client might retry a request that actually succeeded but whose response got lost.
 
 | Method | Idempotent? | Why |
