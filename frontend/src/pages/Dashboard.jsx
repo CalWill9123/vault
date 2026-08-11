@@ -19,9 +19,16 @@ const Dashboard = () => {
   const handleAdd = (newTransaction) =>{
     setTransactions([...transactions,newTransaction]) 
   }
+  const handleDelete = (id) => {
+    if (!window.confirm('Remove this transaction?')) return
+    transactionService
+    .deleteTransaction(id,user.token)
+    .then(() => setTransactions(transactions.filter(i => i._id !== id)))
+    .catch(err => console.error(`${err} has occured`))
+  }
  return (
   <div>
- <TransactionList transactions={transactions} />
+ <TransactionList transactions={transactions} onDelete={handleDelete} />
  <TransactionForm onAdd={handleAdd} />
  </div>
 )}

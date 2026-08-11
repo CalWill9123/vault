@@ -7,3 +7,4 @@ const register = (userData) => axios.post(`${baseURL}/register`,userData).then(r
 const login = (userData) => axios.post(`${baseURL}/login`,userData).then(res => res.data)
 
 export default {register, login}
+
