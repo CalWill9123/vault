@@ -24,6 +24,14 @@ router.delete('/:id', async (req, res) => {
     res.status(204).end()
 })
 
+router.put('/:id', async (req,res) =>{
+    const {amount,type, category,description,date} = req.body
+    const updated = await Transaction.findByIdAndUpdate(req.params.id,{amount,type,category,description,date},{new:true})
+   
+    res.status(200).json(updated)
+})
+
+
 // GET    /api/transactions
 // POST   /api/transactions
 // PUT    /api/transactions/:id

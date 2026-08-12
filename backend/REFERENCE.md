@@ -1382,7 +1382,45 @@ The `Bearer ` prefix has to match what the backend expects to split on (`req.hea
 
 ---
 
-## 65. The Frontend↔Backend Contract
+## 65. Persisting State to localStorage
+**What it is:** React state (`useState`) resets to its initial value every time the component tree remounts — which includes a full page refresh. A valid JWT sitting in memory doesn't survive that, so without extra work, refreshing the page logs the user out even though their token is still good. `localStorage` is a browser-provided key/value store that *does* survive refreshes (and even closing the tab) — only cleared by `logout()`, `localStorage.clear()`, or the user manually clearing site data.
+
+Three raw methods, all string-only — objects need `JSON.stringify`/`JSON.parse` on the way in/out:
+```js
+localStorage.setItem('key', JSON.stringify(value))   // save
+localStorage.getItem('key')                           // read — returns a string or null
+localStorage.removeItem('key')                         // delete
+```
+
+Applied to `AuthContext.jsx` — read from localStorage once, on mount, as `useState`'s **lazy initializer** (a function passed to `useState` instead of a plain value; it only runs once, on the very first render):
+
+```js
+const [user, setUser] = useState(() => {
+  try {
+    const savedUser = localStorage.getItem('auth_user')
+    return savedUser ? JSON.parse(savedUser) : null
+  } catch (e) {
+    console.error(`Failed to parse session. ${e} has occured.`)
+    return null
+  }
+})
+
+useEffect(() => {
+  if (user) {
+    localStorage.setItem('auth_user', JSON.stringify(user))
+  } else {
+    localStorage.removeItem('auth_user')
+  }
+}, [user])   // re-run only when user actually changes — not every render
+```
+
+The `try/catch` (§56) guards against corrupted/manually-edited localStorage data crashing `JSON.parse` on load. The `useEffect` keeps localStorage in sync going forward — it fires on `login()` (writes) and `logout()` (removes), since both just call `setUser(...)`, which changes `user`, which re-triggers this effect.
+
+**Check it for real, don't just trust the code:** DevTools → Application tab → Storage → Local Storage → your origin. You'll see the `auth_user` key appear on login and disappear on logout.
+
+---
+
+## 66. The Frontend↔Backend Contract
 **What it is:** The frontend and backend aren't magically linked — they just both agree, separately, on the same shape of data. Nothing enforces this at write-time; if they drift apart, it fails silently instead of loudly.
 
 ```js
@@ -1408,7 +1446,7 @@ Concepts learned through building Vault. These apply to any language, any framew
 
 ---
 
-## 66. Hashing vs Encryption
+## 67. Hashing vs Encryption
 **What it is:** Two ways to protect data — not the same thing.
 
 | | Hashing | Encryption |
@@ -1421,7 +1459,7 @@ Hashing is better for passwords — even if someone steals your database, they c
 
 ---
 
-## 67. Stateless vs Stateful Authentication
+## 68. Stateless vs Stateful Authentication
 **What it is:** Two ways to handle "is this user logged in?"
 
 | | Stateful (sessions) | Stateless (JWT) |
@@ -1434,7 +1472,7 @@ Stateless means the server hands you a signed token after login. You send it wit
 
 ---
 
-## 68. Enumeration Attack Prevention
+## 69. Enumeration Attack Prevention
 **What it is:** Never tell an attacker which specific field failed on login. Always return the same error for wrong email AND wrong password.
 
 ```js
@@ -1449,7 +1487,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 69. Separation of Concerns
+## 70. Separation of Concerns
 **What it is:** Each file should have one job. If a file is doing two things, it's a sign it should be split. Makes bugs easier to find and code easier to explain in interviews.
 
 | File | Job |
@@ -1461,7 +1499,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 70. How to Read an Error Message
+## 71. How to Read an Error Message
 **What it is:** Error messages tell you exactly what went wrong — most beginners skip past them. Read them like a sentence.
 
 ```
@@ -1479,7 +1517,7 @@ Then ask: *where in my code would something be null that I'm calling `.password`
 
 ---
 
-## 71. Debugging Systematically
+## 72. Debugging Systematically
 **What it is:** A process for finding bugs without panicking. Guessing randomly wastes time — narrow it down.
 
 1. **Read the error message** — what does it actually say?
@@ -1492,7 +1530,7 @@ Most bugs come from: wrong variable name, wrong data shape, something being null
 
 ---
 
-## 72. How to Google an Error
+## 73. How to Google an Error
 **What it is:** Googling effectively is a real skill. Bad searches return nothing useful.
 
 **Remove project-specific parts** from the error:
@@ -1510,7 +1548,7 @@ If Stack Overflow doesn't help, search the **official docs** — MDN for JS, Mon
 
 ---
 
-## 73. CRUD — The Four Operations
+## 74. CRUD — The Four Operations
 **What it is:** Every database-driven app does some combination of these four things. If you understand CRUD, you understand 80% of what backends do.
 
 | Letter | Operation | HTTP Method | Mongoose |
@@ -1524,7 +1562,7 @@ Vault's transaction routes are CRUD. So is every todo app, every social media fe
 
 ---
 
-## 74. Thinking in Inputs and Outputs
+## 75. Thinking in Inputs and Outputs
 **What it is:** When you don't know how to write a function, ignore the code and just ask: *what goes in, what comes out?*
 
 Example — POST /api/transactions:
@@ -1535,7 +1573,7 @@ Once you know that, the code is just filling in the middle. This works for any f
 
 ---
 
-## 75. Working Backwards
+## 76. Working Backwards
 **What it is:** When you're stuck, start from what you *want* to end up with and trace backwards to what you need.
 
 Example — you want `res.json({ token })`:
@@ -1548,7 +1586,7 @@ Now you have your steps in order. Write them top to bottom.
 
 ---
 
-## 76. The Principle of Least Privilege
+## 77. The Principle of Least Privilege
 **What it is:** Only give code (or users) the minimum access they need to do their job. A real security principle used everywhere.
 
 Examples in Vault:
@@ -1560,7 +1598,7 @@ In interviews: "I applied least privilege by scoping transactions to the authent
 
 ---
 
-## 77. Precision vs Comprehension Errors
+## 78. Precision vs Comprehension Errors
 **What it is:** Two completely different types of mistakes. Knowing which one you made tells you how to fix it.
 
 **Comprehension error** — you don't understand the concept. Fix: re-read, ask for an explanation, look it up.
@@ -1577,7 +1615,7 @@ Most bugs while learning are precision errors, not comprehension errors. That di
 
 ---
 
-## 78. Think Smaller
+## 79. Think Smaller
 **What it is:** When a problem feels overwhelming, you're probably trying to solve too much at once. The fix is always to shrink the problem until it's something you can actually hold in your head.
 
 **The rule:** If you can't explain what the next line of code should do, the step is still too big.
@@ -1600,7 +1638,7 @@ Now write step 1. Don't think about step 2 yet.
 
 ---
 
-## 79. Git Branching & Pull Requests
+## 80. Git Branching & Pull Requests
 **What it is:** Solo, committing straight to `main` is fine. On any real team, it isn't — everyone works on a separate **branch** so `main` always stays deployable.
 
 ```
@@ -1613,7 +1651,7 @@ Then you open a **pull request (PR)** — a request for someone to review your b
 
 ---
 
-## 80. The Event Loop — Why async/await Doesn't Block
+## 81. The Event Loop — Why async/await Doesn't Block
 **What it is:** JavaScript runs on a single thread — it can only do one thing at a time. So when you `await` a database call or an axios request, how does the rest of the app keep responding?
 
 The **event loop** is the mechanism: slow operations (network calls, timers, file reads) get handed off to the runtime (Node/browser), and your JS code moves on immediately. When that operation finishes, its `.then()`/callback gets queued and run *later*, in between other work — not blocking anything in the meantime.
@@ -1629,7 +1667,7 @@ This is why your `authService.login()` call doesn't freeze the page while it wai
 
 ---
 
-## 81. Big O Notation — The Basics
+## 82. Big O Notation — The Basics
 **What it is:** A way to describe how an algorithm's runtime grows as the input grows. Common interview topic, and useful for spotting slow code in your own projects.
 
 | Notation | Name | Example |
@@ -1643,14 +1681,14 @@ You don't need to calculate it precisely day to day — the useful habit is noti
 
 ---
 
-## 82. Technical Debt
+## 83. Technical Debt
 **What it is:** Shortcuts taken to ship faster now, at the cost of harder-to-maintain code later — like a financial loan, it has to get "paid back" eventually (refactored) or it keeps accumulating interest (more bugs, slower changes).
 
 Not inherently bad — sometimes shipping now and cleaning up later is the right call. The problem is debt that's never acknowledged or repaid. In interviews, being able to say "we took on debt here to hit a deadline, and here's what paying it down would've looked like" reads as senior judgment, not a confession.
 
 ---
 
-## 83. DRY vs. Premature Abstraction (Rule of Three)
+## 84. DRY vs. Premature Abstraction (Rule of Three)
 **What it is:** "Don't Repeat Yourself" is real, but applying it too early creates the opposite problem — an abstraction built around a guess at future needs that doesn't actually fit when those needs arrive.
 
 **The Rule of Three:** don't abstract something out until you've written it **three** separate times. Two similar-looking pieces of code might just be a coincidence; a third occurrence is a real pattern worth extracting into a shared function/component.
@@ -1659,7 +1697,7 @@ Building `TransactionForm` and `TransactionList` separately even though they'll 
 
 ---
 
-## 84. Idempotency
+## 85. Idempotency
 **What it is:** An operation is **idempotent** if doing it once and doing it five times leave the system in the same state. This matters because networks are unreliable — a client might retry a request that actually succeeded but whose response got lost.
 
 | Method | Idempotent? | Why |

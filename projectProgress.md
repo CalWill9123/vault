@@ -1,6 +1,6 @@
 # Vault — Project Progress
 
-_Last updated: 2026-08-09_
+_Last updated: 2026-08-11_
 
 ---
 
@@ -31,7 +31,7 @@ GET fetches only the logged-in user's transactions, POST creates one and stamps 
 ## Frontend — Full auth + transaction flow working end-to-end
 
 ### `context/AuthContext.jsx` ✅
-Global auth state — stores the logged-in user, exposes `login`/`logout` to the whole app via `useAuth`.
+Global auth state — stores the logged-in user, exposes `login`/`logout` to the whole app via `useAuth`. **Now persists to `localStorage`** (as of 2026-08-11) — `useState` lazy-loads any saved session on mount, and a `useEffect([user])` keeps localStorage in sync on every login/logout. Session survives a page refresh. **Tested live — reloading `/dashboard` no longer bounces to `/login`.**
 
 ### `services/authService.js` ✅
 `register()` and `login()` both done.
@@ -49,24 +49,26 @@ Controlled name/email/password form. Calls `authService.register()`, redirects t
 Wraps `/dashboard`. Checks `useAuth()`'s `user` — no user, redirects to `/login`; user exists, renders the page. **Tested live in a logged-out state — correctly blocks access.**
 
 ### `pages/Dashboard.jsx` ✅
-Fetches transactions on load (`useEffect` + `getTransactions`), holds them in state, renders `TransactionForm` and `TransactionList` together. Owns `handleAdd`, passed down to `TransactionForm` as the `onAdd` prop.
+Fetches transactions on load (`useEffect` + `getTransactions`), holds them in state, renders `TransactionForm` and `TransactionList` together. Owns `handleAdd` (passed to `TransactionForm` as `onAdd`) and `handleDelete` (passed to `TransactionList` as `onDelete` — confirms via `window.confirm`, calls `transactionService.deleteTransaction`, then filters the deleted transaction out of state by `_id`).
 
 ### `components/TransactionList.jsx` ✅
-Takes `transactions` as a prop, `.map()`s over them, renders each as a `<li>` with category and amount.
+Takes `transactions` and `onDelete` as props, `.map()`s over the list, renders each as a `<li>` with category, amount, and a **Delete button** (calls `onDelete(transaction._id)`).
 
 ### `components/TransactionForm.jsx` ✅
 Controlled inputs for all 5 fields (amount, type, category, description, date). On submit, calls `transactionService.addTransactions()`, then calls `onAdd()` with the real saved transaction (including its database `_id`) so `Dashboard` can update its list without a page refresh.
 
 **Full flow tested live end-to-end on 2026-08-09:** register → login → protected dashboard → fetch transactions → add a new transaction → list updates instantly, no refresh. Confirmed against the real database, not mocked.
 
+**Delete + session persistence tested live end-to-end on 2026-08-11:** added a transaction, deleted it (confirm dialog → real DELETE request → item disappears), and confirmed the session now survives a page refresh instead of bouncing to `/login`.
+
 ### `components/Navbar.jsx` — still a placeholder
-Just `<nav>Vault</nav>`. No logout button yet.
+Just `<nav>Vault</nav>`. No logout button, and no visible login/logout UI anywhere in the app yet — next task up.
 
 ---
 
 ## Known limitations (not bugs, just not built yet)
-- Nothing persists across a page refresh — `user` only lives in React state (`useState`), so refreshing the page always bounces you back to `/login`, even with a valid session. No token storage (localStorage) yet.
-- No way to edit or delete a transaction from the UI yet (`deleteTransaction` exists in the service layer, just isn't wired to any button).
+- No login/logout UI — `Navbar.jsx` is still a placeholder, no way to log out from the app itself (only by clearing localStorage manually).
+- No way to edit a transaction from the UI yet (delete is done; `PUT /api/transactions/:id` doesn't exist on the backend at all yet).
 - No CSS framework — everything is completely unstyled, plain HTML elements.
 - No charts yet (`chart.js` / `react-chartjs-2` are installed as dependencies, unused so far).
 - No budget goals feature yet.
@@ -75,8 +77,8 @@ Just `<nav>Vault</nav>`. No logout button yet.
 ---
 
 ## Next up (Phase 1 of the longer-term plan — "finish Vault")
-1. `Navbar.jsx` — logout button, using `useAuth()`'s `logout()`.
-2. Wire `deleteTransaction` to a delete button in `TransactionList.jsx`.
+1. `Navbar.jsx` — login/logout UI, using `useAuth()`'s `user`/`logout()`.
+2. Transaction edit (PUT) — backend route + frontend UI, the only CRUD operation not yet built.
 3. Pick and install a CSS framework (Tailwind is the leading candidate, been on the table since 2026-07-01).
 4. Charts — spending breakdown using `chart.js`/`react-chartjs-2`.
 5. Budget goals feature.
