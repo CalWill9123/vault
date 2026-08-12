@@ -1102,6 +1102,17 @@ router.post('/', async (req, res) => {
   res.status(201).json(savedTransaction)
 })
 
+// PUT — update by id, needs 3 arguments: id, new data, options
+router.put('/:id', async (req, res) => {
+  const { amount, type, category, description, date } = req.body
+  const updated = await Transaction.findByIdAndUpdate(
+    req.params.id,
+    { amount, type, category, description, date },
+    { new: true }
+  )
+  res.status(200).json(updated)
+})
+
 // DELETE — remove by id
 router.delete('/:id', async (req, res) => {
   await Transaction.findByIdAndDelete(req.params.id)
@@ -1110,6 +1121,8 @@ router.delete('/:id', async (req, res) => {
 ```
 
 `user: req.user.id` is what links each transaction to the logged-in user — the same `ref: 'User'` you set up in the Transaction schema.
+
+**`findByIdAndUpdate` takes 3 arguments, not 1:** `(id, newData, options)`. By default Mongoose returns the *old* document, so `{ new: true }` is required as the 3rd argument to get the *updated* one back instead.
 
 ---
 
