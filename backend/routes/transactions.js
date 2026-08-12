@@ -51,6 +51,7 @@ router.put('/:id', async (req,res) =>{
     } catch (err){
         res.status(400).json({
             error: 'No data to update.'
+            
         })
     }
 })

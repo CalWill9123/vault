@@ -31,16 +31,27 @@ const TransactionForm = ({onAdd}) => {
     onChange={(e) => setAmount(e.target.value)}
     placeholder="Enter amount"
     />
-    <input
+    <select
     value={type}
     onChange={(e) => setType(e.target.value)}
-    placeholder="Enter type of transaction"
-    />
-    <input
+    >
+    <option value="">Select type</option>
+    <option value="income">Income</option>
+    <option value="expense">Expense</option>
+    </select>
+    <select
     value={category}
     onChange={(e) => setCategory(e.target.value)}
-    placeholder="Enter category"
-    />
+    >
+    <option value="">Select category</option>
+    <option value="food">Food</option>
+    <option value="rent">Rent</option>
+    <option value="utilities">Utilities</option>
+    <option value="transportation">Transportation</option>
+    <option value="entertainment">Entertainment</option>
+    <option value="income">Income</option>
+    <option value="other">Other</option>
+    </select>
     <input
     value={description}
     onChange={(e) => setDescription(e.target.value)}
