@@ -390,7 +390,7 @@ const remove = (id) => axios.delete(`${baseUrl}/${id}`)
 export default { getAll, create, update, remove }
 ```
 
-**Don't confuse this `create` with a MongoDB create.** This `create` just sends a POST request from the browser to your Express server — nothing touches the database here. The actual document only gets created later, on the server, inside the route handler that receives this POST (that's where `new Model().save()` happens — see §43/§67). Same word, two different layers: axios `create()` = "ask the server," Mongoose `.save()` = "server writes to the database."
+**Don't confuse this `create` with a MongoDB create.** This `create` just sends a POST request from the browser to your Express server — nothing touches the database here. The actual document only gets created later, on the server, inside the route handler that receives this POST (that's where `new Model().save()` happens — see §43/§68). Same word, two different layers: axios `create()` = "ask the server," Mongoose `.save()` = "server writes to the database."
 
 ---
 
@@ -1311,7 +1311,23 @@ import Dashboard from './pages/Dashboard'
 
 ---
 
-## 61. useNavigate — Redirecting in Code
+## 61. Link — Declarative Navigation
+**What it is:** React Router's version of `<a href="...">`, for links the user clicks themselves (as opposed to `useNavigate`, §62, which redirects from inside your own code). Renders as a real `<a>` tag in the DOM, but swaps the page via React Router instead of triggering a full browser reload.
+
+```js
+import { Link } from 'react-router-dom'
+
+<Link to="/login">Login</Link>
+<Link to="/register">Register</Link>
+```
+
+**Use `to`, not `href`.** `href` still works technically (it's a real `<a>` under the hood), but it bypasses React Router and forces a full page reload — same problem `BrowserRouter` (§60) exists to avoid. `to` is the React Router-aware prop; always use it on `<Link>`.
+
+**Pick `Link` vs `useNavigate` by what triggers the move.** User clicking something → `<Link to="...">`. Your own code deciding to redirect (after a form submits, after a check in `useEffect`) → `useNavigate()`.
+
+---
+
+## 62. useNavigate — Redirecting in Code
 **What it is:** Sends the user to a different page from inside a function (e.g. after a successful login) instead of waiting for them to click a link.
 
 ```js
@@ -1323,11 +1339,11 @@ navigate('/dashboard')   // call this after login succeeds
 
 `useNavigate` only works inside a component that's rendered underneath `BrowserRouter` — that's why the wrap in §59 has to happen first.
 
-**Not click-bound.** `navigate` is just a plain function — you call it from wherever your own code decides to (inside an `async` `handleSubmit` after `authService.login()` resolves, a `useEffect`, a timeout, whatever). The click-triggered, declarative version of this is `<Link to="/dashboard">` (like an `<a>` tag) — not the same tool, and not covered yet.
+**Not click-bound.** `navigate` is just a plain function — you call it from wherever your own code decides to (inside an `async` `handleSubmit` after `authService.login()` resolves, a `useEffect`, a timeout, whatever). The click-triggered, declarative version of this is `<Link to="/dashboard">` (§61) — not the same tool.
 
 ---
 
-## 62. Lifting State Up (Callback Props)
+## 63. Lifting State Up (Callback Props)
 **What it is:** When a child component needs to change data that lives in its parent, it can't just reach up and edit the parent's state directly — props only flow one way (§3). Instead, the parent passes a *function* down as a prop; the child calls that function, and the function (which lives in the parent, next to the real `setState`) does the actual updating.
 
 ```js
@@ -1355,7 +1371,7 @@ This is the pattern behind `Dashboard.jsx` coordinating `TransactionForm.jsx` an
 
 ---
 
-## 63. Protected Routes (Route Guarding)
+## 64. Protected Routes (Route Guarding)
 **What it is:** Right now, typing `/dashboard` directly into the URL bar works whether or not you're logged in — nothing checks. A protected route wraps a page and checks `useAuth()`'s `user` before rendering it: no user, redirect to `/login`; user exists, render the real page.
 
 ```js
@@ -1375,11 +1391,11 @@ const ProtectedRoute = ({ children }) => {
 } />
 ```
 
-`<Navigate to="..." />` is the declarative cousin of `useNavigate()` (§60) — same redirect, but usable directly in JSX instead of inside a function.
+`<Navigate to="..." />` is the declarative cousin of `useNavigate()` (§62) — same redirect, but usable directly in JSX instead of inside a function.
 
 ---
 
-## 64. Sending the JWT with Requests (Authorization Header)
+## 65. Sending the JWT with Requests (Authorization Header)
 **What it is:** The backend's `authMiddleware` (§48) checks every protected request for `req.headers.authorization` — a login token has to actually be attached to each request, or the server sends back a 401. Nothing does this automatically; every service call that hits a protected route has to add the header itself.
 
 ```js
@@ -1394,7 +1410,7 @@ The `Bearer ` prefix has to match what the backend expects to split on (`req.hea
 
 ---
 
-## 65. Persisting State to localStorage
+## 66. Persisting State to localStorage
 **What it is:** React state (`useState`) resets to its initial value every time the component tree remounts — which includes a full page refresh. A valid JWT sitting in memory doesn't survive that, so without extra work, refreshing the page logs the user out even though their token is still good. `localStorage` is a browser-provided key/value store that *does* survive refreshes (and even closing the tab) — only cleared by `logout()`, `localStorage.clear()`, or the user manually clearing site data.
 
 Three raw methods, all string-only — objects need `JSON.stringify`/`JSON.parse` on the way in/out:
@@ -1432,7 +1448,7 @@ The `try/catch` (§56) guards against corrupted/manually-edited localStorage dat
 
 ---
 
-## 66. The Frontend↔Backend Contract
+## 67. The Frontend↔Backend Contract
 **What it is:** The frontend and backend aren't magically linked — they just both agree, separately, on the same shape of data. Nothing enforces this at write-time; if they drift apart, it fails silently instead of loudly.
 
 ```js
@@ -1458,7 +1474,7 @@ Concepts learned through building Vault. These apply to any language, any framew
 
 ---
 
-## 67. Hashing vs Encryption
+## 68. Hashing vs Encryption
 **What it is:** Two ways to protect data — not the same thing.
 
 | | Hashing | Encryption |
@@ -1471,7 +1487,7 @@ Hashing is better for passwords — even if someone steals your database, they c
 
 ---
 
-## 68. Stateless vs Stateful Authentication
+## 69. Stateless vs Stateful Authentication
 **What it is:** Two ways to handle "is this user logged in?"
 
 | | Stateful (sessions) | Stateless (JWT) |
@@ -1484,7 +1500,7 @@ Stateless means the server hands you a signed token after login. You send it wit
 
 ---
 
-## 69. Enumeration Attack Prevention
+## 70. Enumeration Attack Prevention
 **What it is:** Never tell an attacker which specific field failed on login. Always return the same error for wrong email AND wrong password.
 
 ```js
@@ -1499,7 +1515,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 70. Separation of Concerns
+## 71. Separation of Concerns
 **What it is:** Each file should have one job. If a file is doing two things, it's a sign it should be split. Makes bugs easier to find and code easier to explain in interviews.
 
 | File | Job |
@@ -1511,7 +1527,7 @@ If you say "email not found," an attacker can cycle through emails and build a l
 
 ---
 
-## 71. How to Read an Error Message
+## 72. How to Read an Error Message
 **What it is:** Error messages tell you exactly what went wrong — most beginners skip past them. Read them like a sentence.
 
 ```
@@ -1529,7 +1545,7 @@ Then ask: *where in my code would something be null that I'm calling `.password`
 
 ---
 
-## 72. Debugging Systematically
+## 73. Debugging Systematically
 **What it is:** A process for finding bugs without panicking. Guessing randomly wastes time — narrow it down.
 
 1. **Read the error message** — what does it actually say?
@@ -1542,7 +1558,7 @@ Most bugs come from: wrong variable name, wrong data shape, something being null
 
 ---
 
-## 73. How to Google an Error
+## 74. How to Google an Error
 **What it is:** Googling effectively is a real skill. Bad searches return nothing useful.
 
 **Remove project-specific parts** from the error:
@@ -1560,7 +1576,7 @@ If Stack Overflow doesn't help, search the **official docs** — MDN for JS, Mon
 
 ---
 
-## 74. CRUD — The Four Operations
+## 75. CRUD — The Four Operations
 **What it is:** Every database-driven app does some combination of these four things. If you understand CRUD, you understand 80% of what backends do.
 
 | Letter | Operation | HTTP Method | Mongoose |
@@ -1574,7 +1590,7 @@ Vault's transaction routes are CRUD. So is every todo app, every social media fe
 
 ---
 
-## 75. Thinking in Inputs and Outputs
+## 76. Thinking in Inputs and Outputs
 **What it is:** When you don't know how to write a function, ignore the code and just ask: *what goes in, what comes out?*
 
 Example — POST /api/transactions:
@@ -1585,7 +1601,7 @@ Once you know that, the code is just filling in the middle. This works for any f
 
 ---
 
-## 76. Working Backwards
+## 77. Working Backwards
 **What it is:** When you're stuck, start from what you *want* to end up with and trace backwards to what you need.
 
 Example — you want `res.json({ token })`:
@@ -1598,7 +1614,7 @@ Now you have your steps in order. Write them top to bottom.
 
 ---
 
-## 77. The Principle of Least Privilege
+## 78. The Principle of Least Privilege
 **What it is:** Only give code (or users) the minimum access they need to do their job. A real security principle used everywhere.
 
 Examples in Vault:
@@ -1610,7 +1626,7 @@ In interviews: "I applied least privilege by scoping transactions to the authent
 
 ---
 
-## 78. Precision vs Comprehension Errors
+## 79. Precision vs Comprehension Errors
 **What it is:** Two completely different types of mistakes. Knowing which one you made tells you how to fix it.
 
 **Comprehension error** — you don't understand the concept. Fix: re-read, ask for an explanation, look it up.
@@ -1627,7 +1643,7 @@ Most bugs while learning are precision errors, not comprehension errors. That di
 
 ---
 
-## 79. Think Smaller
+## 80. Think Smaller
 **What it is:** When a problem feels overwhelming, you're probably trying to solve too much at once. The fix is always to shrink the problem until it's something you can actually hold in your head.
 
 **The rule:** If you can't explain what the next line of code should do, the step is still too big.
@@ -1650,7 +1666,7 @@ Now write step 1. Don't think about step 2 yet.
 
 ---
 
-## 80. Git Branching & Pull Requests
+## 81. Git Branching & Pull Requests
 **What it is:** Solo, committing straight to `main` is fine. On any real team, it isn't — everyone works on a separate **branch** so `main` always stays deployable.
 
 ```
@@ -1663,7 +1679,7 @@ Then you open a **pull request (PR)** — a request for someone to review your b
 
 ---
 
-## 81. The Event Loop — Why async/await Doesn't Block
+## 82. The Event Loop — Why async/await Doesn't Block
 **What it is:** JavaScript runs on a single thread — it can only do one thing at a time. So when you `await` a database call or an axios request, how does the rest of the app keep responding?
 
 The **event loop** is the mechanism: slow operations (network calls, timers, file reads) get handed off to the runtime (Node/browser), and your JS code moves on immediately. When that operation finishes, its `.then()`/callback gets queued and run *later*, in between other work — not blocking anything in the meantime.
@@ -1679,7 +1695,7 @@ This is why your `authService.login()` call doesn't freeze the page while it wai
 
 ---
 
-## 82. Big O Notation — The Basics
+## 83. Big O Notation — The Basics
 **What it is:** A way to describe how an algorithm's runtime grows as the input grows. Common interview topic, and useful for spotting slow code in your own projects.
 
 | Notation | Name | Example |
@@ -1693,14 +1709,14 @@ You don't need to calculate it precisely day to day — the useful habit is noti
 
 ---
 
-## 83. Technical Debt
+## 84. Technical Debt
 **What it is:** Shortcuts taken to ship faster now, at the cost of harder-to-maintain code later — like a financial loan, it has to get "paid back" eventually (refactored) or it keeps accumulating interest (more bugs, slower changes).
 
 Not inherently bad — sometimes shipping now and cleaning up later is the right call. The problem is debt that's never acknowledged or repaid. In interviews, being able to say "we took on debt here to hit a deadline, and here's what paying it down would've looked like" reads as senior judgment, not a confession.
 
 ---
 
-## 84. DRY vs. Premature Abstraction (Rule of Three)
+## 85. DRY vs. Premature Abstraction (Rule of Three)
 **What it is:** "Don't Repeat Yourself" is real, but applying it too early creates the opposite problem — an abstraction built around a guess at future needs that doesn't actually fit when those needs arrive.
 
 **The Rule of Three:** don't abstract something out until you've written it **three** separate times. Two similar-looking pieces of code might just be a coincidence; a third occurrence is a real pattern worth extracting into a shared function/component.
@@ -1709,7 +1725,7 @@ Building `TransactionForm` and `TransactionList` separately even though they'll 
 
 ---
 
-## 85. Idempotency
+## 86. Idempotency
 **What it is:** An operation is **idempotent** if doing it once and doing it five times leave the system in the same state. This matters because networks are unreliable — a client might retry a request that actually succeeded but whose response got lost.
 
 | Method | Idempotent? | Why |
