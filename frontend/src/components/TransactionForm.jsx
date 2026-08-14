@@ -24,16 +24,21 @@ const TransactionForm = ({onAdd}) => {
 
   
   
+  const inputStyle = "rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
+
   return(
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 rounded-2xl border border-gray-800 bg-gray-900 p-6">
+    <h2 className="text-lg font-semibold text-gray-100">Add Transaction</h2>
     <input
     value={amount}
     onChange={(e) => setAmount(e.target.value)}
     placeholder="Enter amount"
+    className={inputStyle}
     />
     <select
     value={type}
     onChange={(e) => setType(e.target.value)}
+    className={inputStyle}
     >
     <option value="">Select type</option>
     <option value="income">Income</option>
@@ -42,6 +47,7 @@ const TransactionForm = ({onAdd}) => {
     <select
     value={category}
     onChange={(e) => setCategory(e.target.value)}
+    className={inputStyle}
     >
     <option value="">Select category</option>
     <option value="food">Food</option>
@@ -56,15 +62,17 @@ const TransactionForm = ({onAdd}) => {
     value={description}
     onChange={(e) => setDescription(e.target.value)}
     placeholder="Enter description"
+    className={inputStyle}
     />
     <input
     value={date}
     onChange={(e) => setDate(e.target.value)}
     placeholder="Enter date"
+    className={inputStyle}
     />
-    <button type="submit">Submit</button>
+    <button type="submit" className="mt-1 rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700">Submit</button>
   </form>
-  
+
   )}
 
 export default TransactionForm

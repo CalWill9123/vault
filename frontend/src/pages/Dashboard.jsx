@@ -3,6 +3,7 @@ import transactionService from "../services/transactionService"
 import { useAuth } from "../context/AuthContext"
 import TransactionList from "../components/TransactionList"
 import TransactionForm from "../components/TransactionForm"
+import SpendingChart from "../components/SpendingChart"
 
 const Dashboard = () => {
 
@@ -27,10 +28,13 @@ const Dashboard = () => {
     .catch(err => console.error(`${err} has occured`))
   }
  return (
-  <div>
- <TransactionList transactions={transactions} onDelete={handleDelete} />
- <TransactionForm onAdd={handleAdd} />
- </div>
+  <div className="min-h-screen bg-gray-950 px-4 py-6">
+    <div className="mx-auto flex max-w-2xl flex-col gap-6">
+      <SpendingChart transactions={transactions} />
+      <TransactionList transactions={transactions} onDelete={handleDelete} />
+      <TransactionForm onAdd={handleAdd} />
+    </div>
+  </div>
 )}
 
 export default Dashboard
