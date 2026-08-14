@@ -8,12 +8,13 @@ const App = () => {
   return(
   <>
   <Navbar />
-  <Routes>
-  <Route path="/login" element={<Login />} />
-  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute> } />
-  <Route path="/register" element={<Register /> } />
-  </Routes>
-  </>
+<Routes>
+<Route path="/login" element={<Login />} />
+<Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute> } />
+<Route path="/register" element={<Register /> } />
+</Routes>
+</>
 )}
 
 export default App
+
