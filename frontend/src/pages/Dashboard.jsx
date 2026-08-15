@@ -4,16 +4,26 @@ import { useAuth } from "../context/AuthContext"
 import TransactionList from "../components/TransactionList"
 import TransactionForm from "../components/TransactionForm"
 import SpendingChart from "../components/SpendingChart"
+import budgetService from "../services/budgetService"
+import BudgetSummary from "../components/BudgetSummary"
 
 const Dashboard = () => {
 
   const [transactions,setTransactions] = useState([])
+  const [budget,setBudget] = useState([])
   const {user} = useAuth()
 
   useEffect (() => {
     transactionService
     .getTransactions(user.token)
     .then(data => setTransactions(data))
+    .catch(err => console.error(`${err} has just occured.`))
+  },[])
+
+  useEffect (() => {
+    budgetService
+    .getBudget(user.token)
+    .then(data =>setBudget(data))
     .catch(err => console.error(`${err} has just occured.`))
   },[])
 
@@ -33,6 +43,7 @@ const Dashboard = () => {
       <SpendingChart transactions={transactions} />
       <TransactionList transactions={transactions} onDelete={handleDelete} />
       <TransactionForm onAdd={handleAdd} />
+      <BudgetSummary transactions={transactions} budget={budget} />
     </div>
   </div>
 )}
