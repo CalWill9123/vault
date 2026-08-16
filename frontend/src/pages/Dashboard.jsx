@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import transactionService from "../services/transactionService"
 import { useAuth } from "../context/AuthContext"
 import TransactionList from "../components/TransactionList"
@@ -38,14 +39,27 @@ const Dashboard = () => {
     .then(() => setTransactions(transactions.filter(i => i._id !== id)))
     .catch(err => console.error(`${err} has occured`))
   }
+ const cards = [
+    <SpendingChart transactions={transactions} />,
+    <SpendingTime transactions={transactions} />,
+    <TransactionList transactions={transactions} onDelete={handleDelete} />,
+    <TransactionForm onAdd={handleAdd} />,
+    <BudgetSummary transactions={transactions} budget={budget} />,
+  ]
+
  return (
   <div className="min-h-screen bg-gray-950 px-4 py-6">
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
-      <SpendingChart transactions={transactions} />
-      <SpendingTime transactions={transactions} />
-      <TransactionList transactions={transactions} onDelete={handleDelete} />
-      <TransactionForm onAdd={handleAdd} />
-      <BudgetSummary transactions={transactions} budget={budget} />
+      {cards.map((card, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.08, duration: 0.3 }}
+        >
+          {card}
+        </motion.div>
+      ))}
     </div>
   </div>
 )}
